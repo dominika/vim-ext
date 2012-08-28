@@ -1,0 +1,129 @@
+*exttask.txt*          For Vim version 7.3           Last change: 2012 August 27
+      
+                                ExT
+
+   Author:   Dominika Stempniewicz
+Copyright:   Vim License applies to ExT plugin (see vims |copyright| for more
+             information). Absolutely no warranty -- use at your own risk!
+
+==============================================================================
+CONTENTS                                                   *ExT_contents*
+    
+     Contents ............................... |ExT_contents|
+  1. About .................................. |ExT_about|
+  2. Usage .................................. |ExT_usage|
+  3. Commands ............................... |ExT_commands|
+      ExTRun ................................ |ExTRun|
+      ExTToggle ............................. |ExTToggle|
+  4. Mappings ............................... |ExT_mappings|
+  5. Examples ............................... |ExT_examples|
+  6. Changelog .............................. |ExT_changelog|
+
+==============================================================================
+1. About                                                   *ExT_about*
+
+External commands that do not block your editor and are easily managed.
+
+I know -- hundreds of other plugins have been created to perform a similar
+role and I have used quite a few. Unfortunately it was a bit tedious task to 
+alter them to my needs, so I decided to create something simple which will
+have just what I need. After some time it grew a little, that's why I share,
+maybe you will find it useful.
+
+==============================================================================
+2. Usage                                                   *ExT_usage*
+
+To use the plugin simply fire your desired command with |ExTRun|. The
+command will run asynchronously and it will be added to your tasks list, so
+you can go about editing as usual.
+
+You can view all tasks and their current status by using |ExTToggle|.
+From there you can control them with |ExT_task_list_mappings|.
+
+When the execution of your background command is finished, results buffer will 
+appear with your commands output. Use |ExT_result_buffer_mappings| to open
+files if there are any paths present in your ouput.
+
+==============================================================================
+3. Commands                                                *ExT_commands*
+
+:ExTRun {cmd}, {options}                                  *ExTRun*
+        Runs and adds your {cmd}.
+        {options} have to be a dictionary e.g. {'key': value}. Override option
+        which you would like to change, following keys are available:
+          'exclusive' {1,0}                               default: 0
+              if enabled, adding the same command twice will be blocked.
+              Note: command name, excluding arguments will be checked
+
+          'hidelist'  {1,0}                               default: 0
+              if enabled, task list won't be displayed after binding. Only
+              results buffer will be shown when the command finished
+              executing.
+
+          'highlight' string                              default: ""
+              unless empty, specifies pattern which will be highlighted in the
+              results buffer
+
+          'autowatch' {1,0}                               default: 0
+              if enabled, the result buffer will be automatically refreshed
+              with up-to-date output while executing command
+
+:ExTToggle                                                 *ExTToggle*
+        Toggles tasks list pane. See also |ExT_task_list_mappings|.
+
+==============================================================================
+4. Mappings                                                *ExT_mappings*
+
+Task list                                           *ExT_task_list_mappings*
+R      refresh task list
+<CR>   open tasks result buffer
+dd     delete task
+r      rerun task under cursor
+
+       Note: when reruning and deleting a task please keep in mind that the
+             command process will be killed if it is already running.
+
+Result buffer                                       *ExT_result_buffer_mappings*
+t      open file under cursor in new tab
+o      open file under cursor in the same buffer     
+<CR>   open file under cursor in new buffer
+
+==============================================================================
+5. Examples                                                *ExT_examples*
+
+You can call ExT plugin commands directly or make some nice wrappers for it
+which you should put in your .vimrc.
+Here are two examples, simple wrappers for ack and rspec with mappings: >
+function! My_ack()
+  let pattern = input("pattern: ")              " searched pattern
+  let opts = input("opts: ")                    " some options
+  let opts = opts == "" ? "--ruby" : opts
+  ExTRun "ack ".opts." ".pattern." .",{'highlight':pattern, 'hidelist':1}
+endfunction
+nnoremap <Leader>a :call My_ack()
+<
+Now whenever you would want to search for a phrase in a project use <Leader>a
+and after providing pattern (and options) ack will be invoked by ExT, added to
+task list. Long searches won't freeze your editor anymore and you will also
+have search results present in case you would want to search for the same
+thing again -- you can simply reopen results from task list.
+Considering the fact that ack isn't a long living process, example below would
+show ExT better: >
+function! My_rspec()
+  let path = input("path: ")
+  let path = path == "" ? "spec" : path
+  let opts = input("opts: ")
+  let opts = opts == "" ? "-f d" : opts
+  ExTRun "bundle exec rspec ".opts." ".path,{'exclusive':1, 'autowatch': 1}
+endfunction
+nnoremap <Leader>r :call My_rspec()
+<
+Provided that your tests are slow or that you have tons of them :P
+
+==============================================================================
+6. Changelog                                               *ExT_changelog*
+
+0.9.0   - initial
+
+==============================================================================
+vim:ft=help:et:ts=2:sw=2:sts=2:norl
