@@ -7,4 +7,4 @@ setlocal nonumber
 setlocal noautoread
 setlocal nowrap
 setlocal nospell
-setlocal readonly
+"setlocal readonly

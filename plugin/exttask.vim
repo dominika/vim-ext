@@ -123,9 +123,31 @@ function! s:findTaskId(cmd)
   return matched
 endfunction
 
+function! ExTExtensionsCompletion(A,L,P)
+  "if (!empty(s:extentions))
+  return keys(s:extensions)
+  "endif
+endfunction
+
+function! ExTFilterByExtension()
+  let chosen_extension = input("extension: ", "", "customlist,ExTExtensionsCompletion")
+  let cmd = "v/\\.".chosen_extension.":\\d/d"
+  exec cmd
+  normal gg
+endfunction
+
 function! s:showTask(id)
   let task = g:EXTTASKS[a:id]
   call s:prepareWnd("files", {'buffer': task.filename, 'statusline': task.cmd, 'highlight': task.highlight, 'autowatch': task.autowatch})
+  let lines = getbufline(bufnr(task.filename), 1, "$") 
+  let s:extensions = {}
+  for line in lines
+    let extension = matchlist(line, '\.\(\w*\):\d')
+    if (!empty(extension))
+      let old_count = get(s:extensions, extension[1], 0)
+      let s:extensions[extension[1]] = old_count+1
+    endif
+  endfor
 endfunction
 
 function! s:delTask(id,...)
@@ -271,4 +293,5 @@ endfunction
 " {{{
 command! -nargs=* ExTRun call ExTBind(<args>)
 command! -nargs=0 ExTToggle call ExTToggle()
+command! -nargs=0 ExTFilterByExtension call ExTFilterByExtension()
 "}}}

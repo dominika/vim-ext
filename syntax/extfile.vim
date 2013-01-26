@@ -2,6 +2,7 @@ if exists("b:current_syntax")
   finish
 endif
 
+"syn region ExTFold start="" end="--" fold
 syn match ExTpath /^.\{-}:/
 syn match ExTLineNo /\d\+/
 hi def link ExTpath Label
