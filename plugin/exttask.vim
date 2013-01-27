@@ -135,9 +135,9 @@ function! s:findTaskId(cmd)
 endfunction
 
 function! ExTExtensionsCompletion(A,L,P)
-  "if (!empty(s:extentions))
-  return keys(s:extensions)
-  "endif
+  let task = get(g:EXTTASKS, s:findTaskByBufferName(resolve(expand('%'))), {})
+  let extensions = get(task,'extensions',{})
+  return keys(extensions)
 endfunction
 
 function! ExTFilterByExtension()
