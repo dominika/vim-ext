@@ -28,13 +28,13 @@ endif
 " ExTBind
 " {{{
 function! ExTBind(cmd,...)
-  let opts = extend({'exclusive': 0,'highlight': "",'autowatch': 0, 'hidelist':0}, a:0 > 0 ? a:1 : {})
+  let opts = extend({'exclusive': 0,'highlight': "",'autowatch': 0, 'hidelist':0, 'extension_filter':0}, a:0 > 0 ? a:1 : {})
 
   let found = s:findTaskId(opts['exclusive'] == 1 ? substitute(a:cmd,' .*$','','g') : a:cmd)
   if found != -1
     call s:showTask(found)
   else 
-    call s:createTask(a:cmd, filter(opts, "index(['highlight','autowatch','hidelist'], v:key) != -1"))
+    call s:createTask(a:cmd, filter(opts, "index(['highlight','autowatch','hidelist','extension_filter'], v:key) != -1"))
   endif
 endfunction
 "}}}
@@ -166,7 +166,9 @@ endfunction
 function! s:showTask(id)
   let task = g:EXTTASKS[a:id]
   call s:prepareWnd("files", {'buffer': task.filename, 'statusline': task.cmd, 'highlight': task.highlight, 'autowatch': task.autowatch})
-  call s:prepareExtensionList(a:id)
+  if task.extension_filter
+    call s:prepareExtensionList(a:id)
+  endif
 endfunction
 
 function! s:delTask(id,...)

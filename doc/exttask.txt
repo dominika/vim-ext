@@ -84,9 +84,11 @@ r      rerun task under cursor
              command process will be killed if it is already running.
 
 Result buffer                                       *ExT_result_buffer_mappings*
-t      open file under cursor in new tab
-o      open file under cursor in the same buffer     
-<CR>   open file under cursor in new buffer
+t          open file under cursor in new tab
+o          open file under cursor in the same buffer     
+<CR>       open file under cursor in new buffer
+<Leader>f  filter current list by chosen file extensions
+             Note: task has to be invoked with {'extension_filter':1}
 
 ==============================================================================
 5. Examples                                                *ExT_examples*
