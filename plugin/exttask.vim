@@ -288,7 +288,7 @@ endfunction
 " files window setup
 " {{{
 function! s:filesRefocus()
-  e
+  e!
   "normal! G
 endfunction
 "}}}
