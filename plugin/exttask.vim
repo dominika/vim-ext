@@ -112,6 +112,17 @@ function! s:taskStatus(pid)
   return  (s:getTaskPids(a:pid) == "") ? "done" : "running"
 endfunction
 
+function! s:findTaskByBufferName(name)
+  let matched = -1
+  for [k,v] in items(g:EXTTASKS)
+    if (resolve(v.filename) == a:name) == 1
+      let matched = k
+      break
+    endif
+  endfor
+  return matched
+endfunction
+
 function! s:findTaskId(cmd)
   let matched = -1
   for [k,v] in items(g:EXTTASKS)
