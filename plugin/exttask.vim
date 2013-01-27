@@ -142,9 +142,12 @@ endfunction
 
 function! ExTFilterByExtension()
   let chosen_extension = input("extension: ", "", "customlist,ExTExtensionsCompletion")
-  let cmd = "v/\\.".chosen_extension.":\\d/d"
-  exec cmd
-  normal gg
+  if !empty(chosen_extension)
+    undo 1 | undo
+    let cmd = "v/\\.".chosen_extension.":\\d/d"
+    exec cmd
+    normal gg
+  endif
 endfunction
 
 function! s:showTask(id)
