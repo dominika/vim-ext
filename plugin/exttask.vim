@@ -150,18 +150,23 @@ function! ExTFilterByExtension()
   endif
 endfunction
 
-function! s:showTask(id)
+function! s:prepareExtensionList(id)
   let task = g:EXTTASKS[a:id]
-  call s:prepareWnd("files", {'buffer': task.filename, 'statusline': task.cmd, 'highlight': task.highlight, 'autowatch': task.autowatch})
   let lines = getbufline(bufnr(task.filename), 1, "$") 
-  let s:extensions = {}
+  let task.extensions = {}
   for line in lines
     let extension = matchlist(line, '\.\(\w*\):\d')
     if (!empty(extension))
-      let old_count = get(s:extensions, extension[1], 0)
-      let s:extensions[extension[1]] = old_count+1
+      let old_count = get(task.extensions, extension[1], 0)
+      let task.extensions[extension[1]] = old_count+1
     endif
   endfor
+endfunction
+
+function! s:showTask(id)
+  let task = g:EXTTASKS[a:id]
+  call s:prepareWnd("files", {'buffer': task.filename, 'statusline': task.cmd, 'highlight': task.highlight, 'autowatch': task.autowatch})
+  call s:prepareExtensionList(a:id)
 endfunction
 
 function! s:delTask(id,...)
